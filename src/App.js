@@ -4,6 +4,7 @@ import './App.css';
 import CartHeader from './components/header'
 import CartFooter from './components/footer'
 import CartItems from './components/cart-items'
+import AddItem from './components/add-item'
 
 const cartItemsList = [
   { id: 1, product: { id: 40, name: 'Mediocre Iron Watch', priceInCents: 399 }, quantity: 1 },
@@ -11,14 +12,58 @@ const cartItemsList = [
   { id: 3, product: { id: 42, name: 'Intelligent Paper Knife', priceInCents: 1999 }, quantity: 1 },
 ]
 
-class App extends Component {
-  render() {
+const products = [
+  { id: 40, name: 'Mediocre Iron Watch', priceInCents: 399 },
+  { id: 41, name: 'Heavy Duty Concrete Plate', priceInCents: 499 },
+  { id: 42, name: 'Intelligent Paper Knife', priceInCents: 1999 },
+  { id: 43, name: 'Small Aluminum Keyboard', priceInCents: 2500 },
+  { id: 44, name: 'Practical Copper Plate', priceInCents: 1000 },
+  { id: 45, name: 'Awesome Bronze Pants', priceInCents: 399 },
+  { id: 46, name: 'Intelligent Leather Clock', priceInCents: 2999 },
+  { id: 47, name: 'Ergonomic Bronze Lamp', priceInCents: 40000 },
+  { id: 48, name: 'Awesome Leather Shoes', priceInCents: 3990 }
+]
 
+class App extends Component {
+  constructor() {
+    super()
+    this.state = {
+      products,
+      cartItemsList
+    }
+  }
+
+  addItem = (productName, quantity) => {
+    const item = {
+      id: this.state.cartItemsList.length + 1, 
+      product: {...this.state.products.find(item => item.name === productName)},
+      quantity
+    }
+
+    const newCartItems = [
+      ...this.state.cartItemsList,
+      item
+    ]
+    
+    this.setState({
+      cartItemsList: newCartItems
+    })
+    // this.setState(prevState => ({
+    //   cartItemsList: [
+    //     ...prevState.cartItemsList.slice(0, updatedDatedItemIdx),
+    //     updatedItem,
+    //     ...prevState.cartItemsList.slice(updatedDatedItemIdx)
+    //   ]
+    // }))
+  }
+
+  render() {
     return (
-      <div> 
+      <div>
         <CartHeader />
-        <CartItems items={cartItemsList} />
-        <CartFooter copyright="2016"/>
+        <CartItems items={this.state.cartItemsList} />
+        <AddItem products={this.state.products} onUpdateCartList={ this.addItem }/>
+        <CartFooter copyright="2016" />
       </div>
     )
     // return (
@@ -33,6 +78,6 @@ class App extends Component {
     //   </div>
     // );
   }
-} 
+}
 
 export default App;
