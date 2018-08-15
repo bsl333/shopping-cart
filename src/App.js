@@ -5,6 +5,7 @@ import CartHeader from './components/header'
 import CartFooter from './components/footer'
 import CartItems from './components/cart-items'
 import AddItem from './components/add-item'
+import CartPrice from './components/cart-price'
 
 const cartItemsList = [
   { id: 1, product: { id: 40, name: 'Mediocre Iron Watch', priceInCents: 399 }, quantity: 1 },
@@ -35,26 +36,24 @@ class App extends Component {
 
   addItem = (productName, quantity) => {
     const item = {
-      id: this.state.cartItemsList.length + 1, 
-      product: {...this.state.products.find(item => item.name === productName)},
+      id: this.state.cartItemsList.length + 1,
+      product: { ...this.state.products.find(item => item.name === productName) },
       quantity
     }
 
-    const newCartItems = [
-      ...this.state.cartItemsList,
-      item
-    ]
-    
-    this.setState({
-      cartItemsList: newCartItems
-    })
-    // this.setState(prevState => ({
-    //   cartItemsList: [
-    //     ...prevState.cartItemsList.slice(0, updatedDatedItemIdx),
-    //     updatedItem,
-    //     ...prevState.cartItemsList.slice(updatedDatedItemIdx)
-    //   ]
-    // }))
+    // const newCartItems = [
+    //   ...this.state.cartItemsList,
+    //   item
+    // ]
+    // this.setState({
+    //   cartItemsList: newCartItems
+    // })
+    this.setState(prevState => ({
+      cartItemsList: [
+        ...prevState.cartItemsList,
+        item,
+      ]
+    }))
   }
 
   render() {
@@ -62,7 +61,8 @@ class App extends Component {
       <div>
         <CartHeader />
         <CartItems items={this.state.cartItemsList} />
-        <AddItem products={this.state.products} onUpdateCartList={ this.addItem }/>
+        <CartPrice cartItemsList={this.state.cartItemsList} />
+        <AddItem products={this.state.products} onUpdateCartList={this.addItem} />
         <CartFooter copyright="2016" />
       </div>
     )
