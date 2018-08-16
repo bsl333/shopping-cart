@@ -26,12 +26,21 @@ class App extends Component {
     }
   }
 
-  async componentDidMount() {
-    const productsResonse = await axios.get(`${apiUrl}/products`)
-    const cartItemsListReponse = await axios.get(`${apiUrl}/items`)
+  componentDidMount() {
+    this.getCartItemsLists()
+  }
 
+  getProductsLists = async () => {
+    const productsResponse = await axios.get(`${apiUrl}/products`)
+    return productsResponse.data
+  }
+
+  getCartItemsLists = async () => {
+    const cartItemsListReponse = await axios.get(`${apiUrl}/items`)
+    const products = await this.getProductsLists()
+    
     const cartItemsList = cartItemsListReponse.data.map((item, idx) => {
-      let [prodObj] = productsResonse.data.filter(prod => prod.id === item.product_id)
+      const [ prodObj ] = products.filter(prod => prod.id === item.product_id)
       return {
         id: idx + 1,
         product: prodObj,
@@ -39,24 +48,12 @@ class App extends Component {
       }
     })
 
-    this.setState({
-      products: productsResonse.data,
-      cartItemsList: cartItemsList
-    })
+    this.setState({ products, cartItemsList })
   }
 
-  addItem = (productName, quantity) => {
-    const item = {
-      id: this.state.cartItemsList.length + 1,
-      product: { ...this.state.products.find(item => item.name === productName) },
-      quantity
-    }
-    this.setState(prevState => ({
-      cartItemsList: [
-        ...prevState.cartItemsList,
-        item,
-      ]
-    }))
+  addItem = async (body) => {
+    await axios.post(`${apiUrl}/items`, body)
+    this.getCartItemsLists()
   }
 
   render() {
@@ -69,17 +66,6 @@ class App extends Component {
         <CartFooter copyright="2016" />
       </div>
     )
-    // return (
-    //   <div className="App">
-    //     <header className="App-header">
-    //       <img src={logo} className="App-logo" alt="logo" />
-    //       <h1 className="App-title">Welcome to React</h1>
-    //     </header>
-    //     <p className="App-intro">
-    //       To get started, edit <code>src/App.js</code> and save to reload.
-    //     </p>
-    //   </div>
-    // );
   }
 }
 

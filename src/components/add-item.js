@@ -1,5 +1,7 @@
 import React from 'react'
 
+
+
 class AddItem extends React.Component {
 
   // constructor(props) {
@@ -10,11 +12,20 @@ class AddItem extends React.Component {
   //   }
   // }
 
-  handleSubmit = (e) => {
+  handleSubmit = async (e) => {
     e.preventDefault()
     const productName = e.target.products.value
     const quantity = e.target.quantity.value
-    this.props.onUpdateCartList(productName, quantity)
+    const id = this.props.products.find(prod => prod.name === productName).id
+    const body = {
+      product_id: id,
+      quantity
+    }
+    
+    this.props.onUpdateCartList(body)
+    
+    
+
   }
 
   render() {
